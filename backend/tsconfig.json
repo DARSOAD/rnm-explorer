@@ -1,41 +1,41 @@
 {
   "compilerOptions": {
-    /* Salida / entradas */
+    
     "rootDir": "src",
     "outDir": "dist",
 
-    /* Target/Modulo (CommonJS para Jest y ts-node-dev) */
+    
     "target": "ES2020",
     "module": "commonjs",
     "moduleResolution": "node",
 
-    /* Entorno Node */
+   
     "lib": ["ES2020"],
     "types": ["node", "jest"],
 
-    /* Emisión */
+    
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
     "removeComments": false,
 
-    /* Interop y JSON */
+    
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
 
-    /* Calidad/seguridad */
+   
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
 
-    /* Modo de aislamiento: bueno para ts-jest/ts-node-dev */
+    
     "isolatedModules": true,
     "verbatimModuleSyntax": false,
 
-    /* Otros útiles */
+   
     "importsNotUsedAsValues": "remove",
     "noEmitOnError": false
   },
