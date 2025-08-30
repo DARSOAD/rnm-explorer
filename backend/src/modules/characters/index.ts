@@ -16,6 +16,7 @@ const sdl = /* GraphQL */ `
     type: String
     gender: String
     image: String
+    originId: ID
   }
 
   type PageInfo {
@@ -33,7 +34,17 @@ const sdl = /* GraphQL */ `
   }
 
   type Query {
-    characters(page: Int = 1, pageSize: Int = 20, sort: CharacterSort = NAME_ASC): CharactersResult!
+    characters(
+      page: Int = 1, 
+      pageSize: Int = 20, 
+      sort: CharacterSort = NAME_ASC,
+      status: String
+      species: String
+      gender: String
+      origin: ID
+      name: String
+    ): CharactersResult!
+    
     character(id: ID!): Character
   }
 `;

@@ -1,5 +1,5 @@
 import type { CharacterRepository } from "../../domain/character/CharacterRepository.port";
-import type { CharacterListStrategy } from "../characters/ListCharacters.usecase";
+import type { CharacterListStrategy } from "../strategies/CharacterListStrategy.port";
 import { DbOnlyStrategy } from "../strategies/DbOnly.strategy";
 import { CacheFirstStrategy } from "../strategies/CacheFirst.strategy";
 import type { Cache } from "../../domain/ports/Cache.port";

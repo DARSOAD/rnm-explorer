@@ -1,10 +1,8 @@
 import type { EventBus } from "../../domain/events/EventBus.port";
 import type { ListResult } from "../../domain/character/CharacterRepository.port";
-import { CharacterFilterBuilder, type CharacterListInput } from "../builders/CharacterFilterBuilder";
+import type { CharacterListStrategy } from "../strategies/CharacterListStrategy.port";
+import { CharacterListInputSchema, CharacterListInput } from "../schemas/CharacterListInput.schema";
 
-export interface CharacterListStrategy {
-  list(params: { page: number; pageSize: number; sort: "NAME_ASC" | "NAME_DESC" }): Promise<ListResult>;
-}
 
 export type Timing = <T>(label: string, fn: () => Promise<T>) => Promise<T>;
 
@@ -15,16 +13,15 @@ export class ListCharacters {
     private readonly measure?: Timing
   ) {}
 
-  async execute(input: CharacterListInput): Promise<ListResult> {
-    const run = async () => {
-      const params = new CharacterFilterBuilder()
-        .withPage(input.page)
-        .withPageSize(input.pageSize)
-        .withSort(input.sort)
-        .build();
+  async execute(input: Partial<CharacterListInput>): Promise<ListResult> {
+    
+    const params = CharacterListInputSchema.parse(input);
 
+    const run = async () => {
+      // Strategy delegation
       const result = await this.strategy.list(params);
 
+      // Event emission
       this.bus.publish({
         type: "CharactersListed",
         payload: { ...params, returned: result.items.length },
@@ -33,6 +30,8 @@ export class ListCharacters {
 
       return result;
     };
+
+    // Decorator pattern for timing
     return this.measure ? this.measure("ListCharacters", run) : run();
   }
 }

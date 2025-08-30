@@ -1,4 +1,4 @@
-import type { CharacterListStrategy } from "../characters/ListCharacters.usecase";
+import type { CharacterListStrategy } from "./CharacterListStrategy.port";
 import type { CharacterEntity, CharacterRepository, ListParams, ListResult } from "../../domain/character/CharacterRepository.port";
 
 export class DbOnlyStrategy implements CharacterListStrategy {
