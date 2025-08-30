@@ -1,11 +1,17 @@
+// /src/modules/characters/index.ts (fragmentos clave)
 import type { FeatureModule, ModuleInitDeps, ContextRegistry } from "../FeatureModule";
-import { makeCharacterRepository } from "../../application/factories/Repository.factory";
+import { repositoryRegistry } from "../../application/factories/RepositoryRegistry";
+import { CHARACTERS_REPO } from "./repository.registration";
+import type { CharacterRepository } from "../../domain/character/CharacterRepository.port";
+
 import { makeCharacterListStrategy } from "../../application/factories/CacheStrategy.factory";
 import { ListCharacters } from "../../application/characters/ListCharacters.usecase";
 import { GetCharacter } from "../../application/characters/GetCharacter.usecase";
 import { DbOnlyStrategy } from "../../application/strategies/DbOnly.strategy";
 
 const sdl = /* GraphQL */ `
+
+  type Mutation { _noop: Boolean }
   enum CharacterSort { NAME_ASC, NAME_DESC }
 
   type Character {
@@ -63,7 +69,10 @@ const resolvers = {
 };
 
 async function init(deps: ModuleInitDeps, ctxReg: ContextRegistry) {
-  const characterRepo = makeCharacterRepository(deps.models);
+  const characterRepo = repositoryRegistry.resolve<CharacterRepository>(
+    CHARACTERS_REPO,
+    { models: deps.models }
+  );
 
   const listStrategy = makeCharacterListStrategy(characterRepo, deps.cache);
   const listUc = new ListCharacters(listStrategy, deps.eventBus, deps.measure);
@@ -72,7 +81,7 @@ async function init(deps: ModuleInitDeps, ctxReg: ContextRegistry) {
 
   ctxReg.facades.set("characters", {
     list: (input: any) => listUc.execute(input),
-    get:  (input: any) => getUc.execute(input),
+    get:  (input: any) => getUc.execute({ id: input.id }),
   });
 }
 
