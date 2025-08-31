@@ -3,17 +3,6 @@ import type { Character } from "./Character.entity";
 
 export type Sort = "NAME_ASC" | "NAME_DESC";
 
-export type ListParams = {
-  page: number;
-  pageSize: number;
-  sort: Sort;
-  status?: string;
-  species?: string;
-  gender?: string;
-  origin?: string;
-  name?: string;
-};
-
 export type PageInfo = {
   page: number;
   pageSize: number;
@@ -23,11 +12,36 @@ export type PageInfo = {
   hasPrev: boolean;
 };
 
-export type CharacterEntity = Character;
+export type CharacterListFilters = {
+  status?: string;
+  species?: string;
+  gender?: string;
+  name?: string;
+  origin?: string;    // por nombre (ILIKE)
+  originId?: string;  // por ID exacto
+};
 
-export type ListResult = { items: CharacterEntity[]; pageInfo: PageInfo };
+export type CharacterListParams = {
+  page: number;
+  pageSize: number;
+  sort: Sort;
+  filters?: CharacterListFilters; 
+};
+
+export type CharacterEntity = Character;
+export type ListPage<T> = { items: T[]; pageInfo: PageInfo };
 
 export interface CharacterRepository {
-  list(params: ListParams): Promise<ListResult>;
+  list(params: CharacterListParams): Promise<ListPage<{
+    id: string;
+    name: string;
+    status?: string | null;
+    species?: string | null;
+    type?: string | null;
+    gender?: string | null;
+    image?: string | null;
+    originId?: string | null;
+  }>>;
+
   getById(id: string): Promise<CharacterEntity | null>;
 }

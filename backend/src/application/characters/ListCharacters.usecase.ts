@@ -1,37 +1,34 @@
-import type { EventBus } from "../../domain/events/EventBus.port";
-import type { ListResult } from "../../domain/character/CharacterRepository.port";
 import type { CharacterListStrategy } from "../strategies/CharacterListStrategy.port";
-import { CharacterListInputSchema, CharacterListInput } from "../schemas/CharacterListInput.schema";
-
-
-export type Timing = <T>(label: string, fn: () => Promise<T>) => Promise<T>;
+import { normalizeCharacterListInput, type CharacterListInput } from "../schemas/CharacterListInput.schema";
+import type { EventBus } from "../../domain/events/EventBus.port";
+import { EVENTS } from "../../domain/events/events";
 
 export class ListCharacters {
   constructor(
     private readonly strategy: CharacterListStrategy,
-    private readonly bus: EventBus,
-    private readonly measure?: Timing
+    private readonly eventBus?: EventBus,
+    private readonly measure?: (name: string, fn: () => Promise<any>) => Promise<any>
   ) {}
 
-  async execute(input: Partial<CharacterListInput>): Promise<ListResult> {
-    
-    const params = CharacterListInputSchema.parse(input);
+  async execute(rawInput: Partial<CharacterListInput>) {
+    const work = async () => {
+      const input = normalizeCharacterListInput(rawInput);
+      const result = await this.strategy.list(input);
 
-    const run = async () => {
-      // Strategy delegation
-      const result = await this.strategy.list(params);
-
-      // Event emission
-      this.bus.publish({
-        type: "CharactersListed",
-        payload: { ...params, returned: result.items.length },
-        at: new Date(),
+      await this.eventBus?.publish({
+        type: EVENTS.CharactersListed,
+        payload: {
+          page: input.page,
+          pageSize: input.pageSize,
+          sort: input.sort,
+          filters: input.filters,
+        },
+        occurredAt: new Date(),
       });
 
       return result;
     };
 
-    // Decorator pattern for timing
-    return this.measure ? this.measure("ListCharacters", run) : run();
+    return this.measure ? this.measure("ListCharacters.execute", work) : work();
   }
 }
