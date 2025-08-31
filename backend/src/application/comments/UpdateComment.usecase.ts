@@ -17,7 +17,7 @@ export class UpdateComment {
       this.deps.eventBus?.publish("CommentUpdated", {
         id: updated.id,
         characterId: updated.characterId,
-        authorId: updated.authorId,
+        authorId: updated.author,
       });
       return updated;
     };

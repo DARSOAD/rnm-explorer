@@ -3,13 +3,12 @@ import type { FetchPolicy /* ojo: NO WatchQueryFetchPolicy */ } from "@apollo/cl
 
 type UseCase = "list" | "detail" | "refresh";
 
-/** Política para llamadas con client.query (no watch). */
 export function chooseFetchPolicy(uc: UseCase): FetchPolicy {
   switch (uc) {
     case "refresh":
-      return "network-only";   // fuerza ir a red
+      return "network-only";   
     case "detail":
-      return "cache-first";    // usa caché y cae a red
+      return "cache-first";  
     case "list":
     default:
       return "cache-first";

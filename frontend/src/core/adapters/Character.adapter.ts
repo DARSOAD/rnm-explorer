@@ -7,7 +7,20 @@ export type CharacterCardVM = {
   species?: string | null;
   gender?: string | null;
   originName?: string | null; 
+  isFavorite: boolean; 
 };
+
+export type CharacterVM = {
+  id: string;
+  name: string;
+  image: string | null;
+  status?: string | null;
+  species?: string | null;
+  gender?: string | null;
+  originId?: string | null; 
+  isFavorite: boolean;
+};
+
 
 export type PageInfoVM = {
   page: number;
@@ -32,7 +45,7 @@ export function toCharacterListVM(data: any): CharacterListVM {
     status: c.status ?? null,
     species: c.species ?? null,
     gender: c.gender ?? null,
-    // originName: c.origin?.name ?? c.originName ?? null,
+    isFavorite: c.isFavorite ?? false,
   }));
   const pi = res.pageInfo ?? {};
   return {
@@ -45,5 +58,18 @@ export function toCharacterListVM(data: any): CharacterListVM {
       hasNext: !!pi.hasNext,
       hasPrev: !!pi.hasPrev,
     },
+  };
+}
+
+export function toCharacterVM(node: any): CharacterVM {
+  return {
+    id: node?.id,
+    name: node?.name,
+    image: node?.image ?? null,
+    status: node?.status ?? null,
+    species: node?.species ?? null,
+    gender: node?.gender ?? null,
+    originId: node?.originId ?? null,
+    isFavorite: node?.isFavorite ?? false,
   };
 }

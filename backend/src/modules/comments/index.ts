@@ -102,7 +102,6 @@ async function init(deps: ModuleInitDeps, ctxReg: ContextRegistry) {
   const deleteUc = new DeleteComment({ strategy, eventBus: deps.eventBus });
 
   ctxReg.facades.set("comments", {
-    // mapear PaginatedResult -> CommentsResult
     list: async (input: any) => {
       const r = await listUc.execute(ListCommentsSchema.parse(input));
       return {
@@ -117,9 +116,32 @@ async function init(deps: ModuleInitDeps, ctxReg: ContextRegistry) {
         },
       };
     },
-    add:    (input: any) => createUc.execute(AddCommentSchema.parse(input)),
-    update: (input: any) => updateUc.execute(UpdateCommentSchema.parse(input)),
-    remove: (input: any) => deleteUc.execute(DeleteCommentSchema.parse(input)),
+  
+    add: (input: any) => {
+      const normalized = {
+        ...input,
+        authorId: input.authorId ?? input.author ?? "global",
+        text: input.text ?? input.content,
+      };
+      return createUc.execute(normalized); 
+    },
+  
+    update: (input: any) => {
+      const normalized = {
+        ...input,
+        authorId: input.authorId ?? input.author ?? "global",
+        text: input.text ?? input.content,
+      };
+      return updateUc.execute(normalized);
+    },
+  
+    remove: (input: any) => {
+      const normalized = {
+        ...input,
+        authorId: input.authorId ?? input.author ?? "global",
+      };
+      return deleteUc.execute(normalized);
+    },
   });
 }
 

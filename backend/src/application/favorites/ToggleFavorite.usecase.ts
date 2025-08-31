@@ -8,7 +8,6 @@ export class ToggleFavorite {
     const params = FavoriteInputSchema.parse(input);
     const run = async () => {
       const { isFavorite } = await this.strategy.toggle(params);
-      // opcional: publicar evento
       this.eventBus?.publish?.({
         type: "CharacterFavorited",
         payload: { ...params, isFavorite },
@@ -16,7 +15,6 @@ export class ToggleFavorite {
       });
       return { ...params, isFavorite };
     };
-    // si tienes decorador de tiempos en deps.measure
     return this.measure?.time ? this.measure.time("ToggleFavorite", run) : run();
   }
 }

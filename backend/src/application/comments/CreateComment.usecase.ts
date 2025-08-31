@@ -17,7 +17,7 @@ export class CreateComment {
       this.deps.eventBus?.publish("CommentAdded", {
         id: created.id,
         characterId: created.characterId,
-        authorId: created.authorId,
+        authorId: created.author,
       });
       return created;
     };

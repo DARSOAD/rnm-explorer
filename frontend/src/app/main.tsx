@@ -4,6 +4,7 @@ import { RouterProvider } from "react-router-dom";
 import { ApolloProvider } from "@apollo/client";
 import { makeApolloClient } from "../core/config/apollo.factory";
 import { router } from "./router";
+import "../../index.css";
 
 const client = makeApolloClient({ uri: import.meta.env.VITE_GRAPHQL_URL || "http://localhost:8000/graphql" });
 

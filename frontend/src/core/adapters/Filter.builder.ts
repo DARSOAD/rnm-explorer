@@ -14,6 +14,7 @@ export type CharactersQueryVars = {
   pageSize: number;
   sort?: Sort;
   filters?: Filters;
+  viewerId: string; 
 };
 
 const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
@@ -34,5 +35,5 @@ export function buildCharactersVariables(input: Partial<CharactersQueryVars>): C
       }
     : undefined;
 
-  return { page, pageSize, sort, filters };
+  return { page, pageSize, sort, filters, viewerId: "global" };
 }
